@@ -16,6 +16,8 @@ type command =
   | Eval of info * term
   | Bind of info * string * binding
 
+val print_command: command -> unit
+
 (* Contexts *)
 type context
 val emptycontext : context 
@@ -26,6 +28,7 @@ val index2name : info -> context -> int -> string
 val getbinding : info -> context -> int -> binding
 val name2index : info -> context -> string -> int
 val isnamebound : context -> string -> bool
+val print_ctx: context -> unit
 
 
 (* Shifting and substitution *)

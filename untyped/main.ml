@@ -63,7 +63,8 @@ let rec process_command ctx cmd = match cmd with
 let process_file f ctx =
   alreadyImported := f :: !alreadyImported;
   let cmds,_ = parseFile f ctx in
-  let g ctx c =  
+  let g ctx c = 
+    print_command c;
     open_hvbox 0;
     let results = process_command ctx c in
     print_flush();

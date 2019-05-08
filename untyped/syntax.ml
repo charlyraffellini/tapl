@@ -19,8 +19,23 @@ type command =
   | Eval of info * term
   | Bind of info * string * binding
 
+
+let rec format_term t = match t with
+  TmVar(_,c,n) -> Printf.sprintf "(TmVar %d,%d)%!" c n
+| TmAbs(_,n,t1) -> Printf.sprintf "(TmAbs %s.%s)%!" n (format_term t1)
+| TmApp(_,t1,t2) -> Printf.sprintf "(TmApp %s,%s)%!" (format_term t1) (format_term t2)
+
+let print_command c =
+  match c with
+    Eval(fi,t) -> Printf.printf "\nEval %s \n%!" (format_term t)
+  | Bind(fi,n,b) -> Printf.printf "\nBind %s\n%!" n
+
 (* ---------------------------------------------------------------------- *)
 (* Context management *)
+
+let rec print_ctx = function 
+  [] -> ()
+  | (y,_)::rest -> Printf.printf "(%s, NameBind)%!" y; print_ctx rest ; print_newline()
 
 let emptycontext = []
 
@@ -60,6 +75,7 @@ let rec name2index fi ctx x =
 (* ---------------------------------------------------------------------- *)
 (* Shifting *)
 
+
 let tmmap onvar c t = 
   let rec walk c t = match t with
     TmVar(fi,x,n) -> onvar fi c x n
@@ -69,7 +85,10 @@ let tmmap onvar c t =
 
 let termShiftAbove d c t =
   tmmap
-    (fun fi c x n -> if x>=c then TmVar(fi,x+d,n+d) else TmVar(fi,x,n+d))
+    (fun fi c x n -> (
+      (* Support.Error.printInfo fi; *)
+      Printf.printf "Shifting  c: %d, x: %d, n: %n, d: %d   \n%!" c x n d;
+      if x>=c then TmVar(fi,x+d,n+d) else TmVar(fi,x,n+d)))
     c t
 
 let termShift d t = termShiftAbove d 0 t
@@ -79,7 +98,10 @@ let termShift d t = termShiftAbove d 0 t
 
 let termSubst j s t =
   tmmap
-    (fun fi c x n -> if x=j+c then termShift c s else TmVar(fi,x,n))
+  (fun fi c x n -> (
+    (* Support.Error.printInfo fi; *)
+    Printf.printf "Subst  c: %d, x: %d, n: %n, j: %d  \n%!" c x n j;
+    if x=j+c then termShift c s else TmVar(fi,x,n)))
     0
     t
 

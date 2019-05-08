@@ -24,6 +24,8 @@ let rec eval1 ctx t = match t with
       raise NoRuleApplies
 
 let rec eval ctx t =
-  try let t' = eval1 ctx t
-      in eval ctx t'
-  with NoRuleApplies -> t
+  (
+    print_ctx ctx;
+    try let t' = eval1 ctx t
+        in eval ctx t'
+    with NoRuleApplies -> t)
