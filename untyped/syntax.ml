@@ -101,11 +101,15 @@ let termSubst j s t =
   (fun fi c x n -> (
     (* Support.Error.printInfo fi; *)
     Printf.printf "Subst  c: %d, x: %d, n: %n, j: %d  \n%!" c x n j;
-    if x=j+c then termShift c s else TmVar(fi,x,n)))
+    let return = if x=j+c then termShift c s else TmVar(fi,x,n) in
+      Printf.printf "Return from substitution walk: %s \n%!" (format_term return);
+      return))
     0
     t
 
-let termSubstTop s t = 
+let termSubstTop s t =
+  Printf.printf "s: %s \n%!" (format_term s);
+  Printf.printf "t: %s \n%!" (format_term t);
   termShift (-1) (termSubst 0 (termShift 1 s) t)
 
 (* ---------------------------------------------------------------------- *)

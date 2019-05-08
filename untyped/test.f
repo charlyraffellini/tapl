@@ -1,10 +1,9 @@
 /* Examples for testing */
 
-y/;
-y;
+x/;
+x;
 
 lambda x. x;
 (lambda x. x) (lambda x. x x); 
 
-
-(lambda y. y) (lambda x. x x); 
+(lambda y. y x) (lambda x. x x); 
